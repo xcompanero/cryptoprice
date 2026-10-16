@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Crypto Price contributors"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Shows the current price of any cryptocurrency from a user-defined source",
+        "EnabledByDefault": true,
+        "Icon": "applications-internet",
+        "Id": "org.cryptoprice.plasmoid",
+        "License": "MIT",
+        "Name": "Crypto Price",
+        "Version": "1.0.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-MainScript": "ui/main.qml"
+}

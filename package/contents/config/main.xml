@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SPDX-FileCopyrightText: 2026 Crypto Price contributors
+  SPDX-License-Identifier: MIT
+-->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+  <kcfgfile name=""/>
+
+  <group name="General">
+    <entry name="sourceUrl" type="String">
+      <label>Source URL</label>
+      <default>https://www.bitstamp.net/api/ticker/</default>
+    </entry>
+    <entry name="sourcePath" type="String">
+      <label>JSON path</label>
+      <default>last</default>
+    </entry>
+    <entry name="tooltipLabel" type="String">
+      <label>Tooltip label</label>
+      <default>Bitstamp BTC-USD</default>
+    </entry>
+    <entry name="customUserAgent" type="String">
+      <label>Custom User-Agent</label>
+      <default></default>
+    </entry>
+    <entry name="timeoutSeconds" type="Int">
+      <label>Request timeout in seconds</label>
+      <default>15</default>
+    </entry>
+  </group>
+
+  <group name="Update">
+    <entry name="refreshRate" type="Int">
+      <label>Refresh rate in minutes</label>
+      <default>30</default>
+    </entry>
+    <entry name="showAge" type="Bool">
+      <label>Show the age of the price in the tooltip</label>
+      <default>true</default>
+    </entry>
+  </group>
+
+  <group name="Display">
+    <entry name="showIcon" type="Bool">
+      <label>Show an icon</label>
+      <default>true</default>
+    </entry>
+    <entry name="iconMode" type="String">
+      <label>Icon source</label>
+      <default>coin</default>
+    </entry>
+    <entry name="coinIcon" type="String">
+      <label>Bundled coin icon</label>
+      <default>btc.svg</default>
+    </entry>
+    <entry name="iconName" type="String">
+      <label>Custom icon name or path</label>
+      <default></default>
+    </entry>
+    <entry name="showText" type="Bool">
+      <label>Show the price</label>
+      <default>true</default>
+    </entry>
+    <entry name="showBackground" type="Bool">
+      <label>Show the widget background</label>
+      <default>true</default>
+    </entry>
+    <entry name="showLabel" type="Bool">
+      <label>Show the label next to the price</label>
+      <default>false</default>
+    </entry>
+    <entry name="showPricePrefix" type="Bool">
+      <label>Show a prefix</label>
+      <default>true</default>
+    </entry>
+    <entry name="pricePrefix" type="String">
+      <label>Price prefix</label>
+      <default>$</default>
+    </entry>
+    <entry name="showPriceSuffix" type="Bool">
+      <label>Show a suffix</label>
+      <default>false</default>
+    </entry>
+    <entry name="priceSuffix" type="String">
+      <label>Price suffix</label>
+      <default></default>
+    </entry>
+    <entry name="controlDecimals" type="Bool">
+      <label>Round to a fixed number of decimals</label>
+      <default>true</default>
+    </entry>
+    <entry name="decPlaces" type="Int">
+      <label>Decimal places</label>
+      <default>2</default>
+    </entry>
+  </group>
+
+  <group name="Conversion">
+    <entry name="multiFixed" type="Bool">
+      <label>Multiply the price by a fixed amount</label>
+      <default>false</default>
+    </entry>
+    <entry name="multiFixedInput" type="Double">
+      <label>Fixed amount</label>
+      <default>1.0</default>
+    </entry>
+    <entry name="multiExternalB" type="Bool">
+      <label>Multiply by a second source</label>
+      <default>false</default>
+    </entry>
+    <entry name="xeUrlB" type="String">
+      <label>Second source URL</label>
+      <default>https://api.kraken.com/0/public/Ticker?pair=XBTUSD</default>
+    </entry>
+    <entry name="xeKeyB" type="String">
+      <label>Second source JSON path</label>
+      <default>result.XXBTZUSD.c[0]</default>
+    </entry>
+    <entry name="multiExternalC" type="Bool">
+      <label>Multiply by a third source</label>
+      <default>false</default>
+    </entry>
+    <entry name="xeUrlC" type="String">
+      <label>Third source URL</label>
+      <default>https://open.er-api.com/v6/latest/USD</default>
+    </entry>
+    <entry name="xeKeyC" type="String">
+      <label>Third source JSON path</label>
+      <default>rates.EUR</default>
+    </entry>
+  </group>
+</kcfg>

@@ -1,0 +1,5 @@
+build/
+*.plasmoid
+*.user
+*.kcfg
+kcfg_generated/
