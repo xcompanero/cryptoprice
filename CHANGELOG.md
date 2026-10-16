@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- **Fixed: the widget painted over its neighbours in the panel.** Using
+  `fontSizeMode: Text.Fit` with a large base font made the text report an
+  implicitWidth of 271px while rendering 107px, so the applet claimed far
+  more width than it drew; the text then overflowed its slot and, with
+  nothing to elide against, drew straight over whatever applet was next to it.
+  The font is now derived from the applet's own height, so implicitWidth
+  matches what is rendered (137px instead of 297px at a 30px panel height), and
+  the text fills its slot and elides rather than overflowing.
+- Icon height is bounded, so a large custom image (a photo, say) can no longer
+  inflate the applet's implicit height.
+- Both config pages are scrollable. The General page is 1579px of content in a
+  ~460px dialog, so everything below the fold was unreachable.
+- Panel applets sit edge to edge in Plasma 6, so the widget now carries its own
+  left/right margin.
+
 ## 1.0.0
 
 First Plasma 6 release. Ported from

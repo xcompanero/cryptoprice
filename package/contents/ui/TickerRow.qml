@@ -42,6 +42,22 @@ Item {
         Math.max(Kirigami.Units.iconSizes.small,
                  Math.min(height * 0.7, Kirigami.Units.iconSizes.huge)))
 
+    /**
+     * Font sizes derived from the applet's own height.
+     *
+     * The obvious-looking choice here is fontSizeMode: Text.Fit with a large
+     * base font, and it is wrong for a panel applet: Text reports
+     * implicitWidth measured at the *base* font size, and only then shrinks
+     * to fit. So the applet asks the panel for ~270px to render ~107px of
+     * text, ends up far wider than its content, and visibly overlaps the
+     * applets either side of it. Scaling the font directly keeps implicitWidth
+     * honest at every panel height.
+     */
+    readonly property int priceFontSize: Math.max(
+        8, Math.min(Kirigami.Units.largeSpacing * 7, Math.round(height * 0.75)))
+    readonly property int labelFontSize: Math.max(
+        7, Math.min(Kirigami.Units.largeSpacing * 5, Math.round(height * 0.5)))
+
     readonly property real effectiveOpacity: failed ? 0.45 : (busy || stale ? 0.6 : 1.0)
 
     /**
@@ -73,10 +89,17 @@ Item {
         id: layout
         anchors.fill: parent
         spacing: Kirigami.Units.smallSpacing
+        // Plasma 6 lays panel applets out edge to edge with no gap between
+        // them, so the separation from neighbouring applets has to come from
+        // here. Without it this widget looks like it is sitting on top of
+        // whatever sits next to it.
+        Layout.leftMargin: Kirigami.Units.smallSpacing
+        Layout.rightMargin: Kirigami.Units.smallSpacing
 
         PlasmaComponents.BusyIndicator {
             Layout.fillHeight: true
             Layout.maximumWidth: Kirigami.Units.iconSizes.small
+            Layout.maximumHeight: Kirigami.Units.iconSizes.small
             visible: root.busy
             running: root.busy
         }
@@ -87,6 +110,7 @@ Item {
             Layout.preferredWidth: root.iconSize
             Layout.maximumWidth: root.iconSize
             Layout.minimumWidth: root.iconSize
+            Layout.maximumHeight: root.iconSize
             visible: root.showIcon && root.iconMode === "coin"
             fillMode: Image.PreserveAspectFit
             asynchronous: true
@@ -101,6 +125,7 @@ Item {
             Layout.preferredWidth: root.iconSize
             Layout.maximumWidth: root.iconSize
             Layout.minimumWidth: root.iconSize
+            Layout.maximumHeight: root.iconSize
             visible: root.showIcon && root.iconMode === "custom"
             fillMode: Image.PreserveAspectFit
             asynchronous: true
@@ -110,6 +135,8 @@ Item {
         Text {
             id: labelText
             Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
             Layout.alignment: Qt.AlignVCenter
             visible: root.showLabel && root.labelText !== ""
             text: root.labelText
@@ -117,24 +144,20 @@ Item {
             opacity: 0.6
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
-            // Grown then shrunk to fit, which is how applet text normally
-            // scales with the panel height without hardcoded pixel sizes.
-            font.pixelSize: Kirigami.Units.largeSpacing * 6
-            fontSizeMode: Text.Fit
-            minimumPixelSize: 6
+            font.pixelSize: root.labelFontSize
         }
 
         Text {
             id: priceText
             Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
             visible: root.showText
             text: root.priceText
             color: Kirigami.Theme.textColor
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
-            font.pixelSize: Kirigami.Units.largeSpacing * 7
-            fontSizeMode: Text.Fit
-            minimumPixelSize: 6
+            font.pixelSize: root.priceFontSize
             opacity: root.effectiveOpacity
         }
     }
