@@ -14,9 +14,10 @@ import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PlasmaComponents
 import "presets.js" as Presets
 
-Kirigami.FormLayout {
+Item {
     id: page
     Layout.fillWidth: true
+    Layout.fillHeight: true
 
     readonly property var factorTitles: {
         const titles = [i18n("Custom")];
@@ -35,168 +36,185 @@ Kirigami.FormLayout {
     property alias cfg_xeUrlC: xeUrlC.text
     property alias cfg_xeKeyC: xeKeyC.text
 
-    // ------------------------------------------------------------- holding
+    // A config page gets a fixed height from the dialog, and both of these
+    // pages are taller than that. Without a scroll view everything below the
+    // fold is simply unreachable. Same pattern as finstats.
+    ScrollView {
+        id: scroll
+        anchors.fill: parent
+        clip: true
+        // Pin the content width to the viewport, otherwise the vertical
+        // scrollbar's own width makes the content overflow sideways and a
+        // horizontal scrollbar appears.
+        contentWidth: availableWidth
 
-    PlasmaComponents.Label {
-        Layout.fillWidth: true
-        font.bold: true
-        font.pointSize: Kirigami.Units.largeSpacing
-        text: i18n("Holding")
-    }
+        Kirigami.FormLayout {
+            width: scroll.availableWidth
 
-    CheckBox {
-        id: multiFixed
-        text: i18n("Multiply the price by an amount you hold")
-    }
+        // ------------------------------------------------------------- holding
 
-    // A TextField rather than a SpinBox: Qt Quick Controls 2 SpinBox has no
-    // "decimals" property (that was a Controls 1 thing), and a holding is
-    // almost always a fraction like 0.42 rather than a whole number.
-    TextField {
-        id: multiFixedInput
-        Kirigami.FormData.label: i18n("Amount")
-        Layout.fillWidth: true
-        enabled: multiFixed.checked
-        text: String(page.cfg_multiFixedInput)
-        validator: DoubleValidator {
-            bottom: 0
-            top: 2000000000
-            notation: DoubleValidator.StandardNotation
+        PlasmaComponents.Label {
+            Layout.fillWidth: true
+            font.bold: true
+            font.pointSize: Kirigami.Units.largeSpacing
+            text: i18n("Holding")
         }
-        onEditingFinished: {
-            const parsed = parseFloat(text);
-            if (!isNaN(parsed)) {
-                page.cfg_multiFixedInput = parsed;
-            } else {
-                text = String(page.cfg_multiFixedInput);
+
+        CheckBox {
+            id: multiFixed
+            text: i18n("Multiply the price by an amount you hold")
+        }
+
+        // A TextField rather than a SpinBox: Qt Quick Controls 2 SpinBox has no
+        // "decimals" property (that was a Controls 1 thing), and a holding is
+        // almost always a fraction like 0.42 rather than a whole number.
+        TextField {
+            id: multiFixedInput
+            Kirigami.FormData.label: i18n("Amount")
+            Layout.fillWidth: true
+            enabled: multiFixed.checked
+            text: String(page.cfg_multiFixedInput)
+            validator: DoubleValidator {
+                bottom: 0
+                top: 2000000000
+                notation: DoubleValidator.StandardNotation
+            }
+            onEditingFinished: {
+                const parsed = parseFloat(text);
+                if (!isNaN(parsed)) {
+                    page.cfg_multiFixedInput = parsed;
+                } else {
+                    text = String(page.cfg_multiFixedInput);
+                }
             }
         }
-    }
 
-    Label {
-        Layout.fillWidth: true
-        wrapMode: Text.WordWrap
-        opacity: 0.7
-        visible: multiFixed.checked
-        text: i18n("With 0.42 selected, a BTC price of $80,000 is shown as $33,600.")
-    }
+        Label {
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            visible: multiFixed.checked
+            text: i18n("With 0.42 selected, a BTC price of $80,000 is shown as $33,600.")
+        }
 
-    // ----------------------------------------------------- stage two
+        // ----------------------------------------------------- stage two
 
-    PlasmaComponents.Label {
-        Layout.fillWidth: true
-        font.bold: true
-        font.pointSize: Kirigami.Units.largeSpacing
-        text: i18n("Second stage")
-    }
+        PlasmaComponents.Label {
+            Layout.fillWidth: true
+            font.bold: true
+            font.pointSize: Kirigami.Units.largeSpacing
+            text: i18n("Second stage")
+        }
 
-    Label {
-        Layout.fillWidth: true
-        wrapMode: Text.WordWrap
-        opacity: 0.7
-        text: i18n("Multiplies the first price by a value fetched elsewhere, for example turning a BTC price into a USD price.")
-    }
+        Label {
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            text: i18n("Multiplies the first price by a value fetched elsewhere, for example turning a BTC price into a USD price.")
+        }
 
-    CheckBox {
-        id: multiExternalB
-        text: i18n("Multiply by a second source")
-    }
+        CheckBox {
+            id: multiExternalB
+            text: i18n("Multiply by a second source")
+        }
 
-    PlasmaComponents.ComboBox {
-        id: factorBCombo
-        Kirigami.FormData.label: i18n("Known factor")
-        Layout.fillWidth: true
-        enabled: multiExternalB.checked
-        model: page.factorTitles
-        onActivated: {
-            if (currentIndex > 0) {
-                xeUrlB.text = Presets.factors[currentIndex - 1].url;
-                xeKeyB.text = Presets.factors[currentIndex - 1].path;
+        PlasmaComponents.ComboBox {
+            id: factorBCombo
+            Kirigami.FormData.label: i18n("Known factor")
+            Layout.fillWidth: true
+            enabled: multiExternalB.checked
+            model: page.factorTitles
+            onActivated: {
+                if (currentIndex > 0) {
+                    xeUrlB.text = Presets.factors[currentIndex - 1].url;
+                    xeKeyB.text = Presets.factors[currentIndex - 1].path;
+                }
             }
         }
-    }
 
-    TextField {
-        id: xeUrlB
-        Kirigami.FormData.label: i18n("URL")
-        Layout.fillWidth: true
-        enabled: multiExternalB.checked
-    }
+        TextField {
+            id: xeUrlB
+            Kirigami.FormData.label: i18n("URL")
+            Layout.fillWidth: true
+            enabled: multiExternalB.checked
+        }
 
-    TextField {
-        id: xeKeyB
-        Kirigami.FormData.label: i18n("JSON path")
-        Layout.fillWidth: true
-        enabled: multiExternalB.checked
-        placeholderText: "rates.EUR"
-    }
+        TextField {
+            id: xeKeyB
+            Kirigami.FormData.label: i18n("JSON path")
+            Layout.fillWidth: true
+            enabled: multiExternalB.checked
+            placeholderText: "rates.EUR"
+        }
 
-    SourceTester {
-        Layout.fillWidth: true
-        visible: multiExternalB.checked
-        url: xeUrlB.text
-        jsonPath: xeKeyB.text
-    }
+        SourceTester {
+            Layout.fillWidth: true
+            visible: multiExternalB.checked
+            url: xeUrlB.text
+            jsonPath: xeKeyB.text
+        }
 
-    // ----------------------------------------------------- stage three
+        // ----------------------------------------------------- stage three
 
-    PlasmaComponents.Label {
-        Layout.fillWidth: true
-        font.bold: true
-        font.pointSize: Kirigami.Units.largeSpacing
-        text: i18n("Third stage")
-    }
+        PlasmaComponents.Label {
+            Layout.fillWidth: true
+            font.bold: true
+            font.pointSize: Kirigami.Units.largeSpacing
+            text: i18n("Third stage")
+        }
 
-    Label {
-        Layout.fillWidth: true
-        wrapMode: Text.WordWrap
-        opacity: 0.7
-        text: i18n("One more multiplication, for example converting a USD price into EUR.")
-    }
+        Label {
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            text: i18n("One more multiplication, for example converting a USD price into EUR.")
+        }
 
-    CheckBox {
-        id: multiExternalC
-        text: i18n("Multiply by a third source")
-    }
+        CheckBox {
+            id: multiExternalC
+            text: i18n("Multiply by a third source")
+        }
 
-    PlasmaComponents.ComboBox {
-        id: factorCCombo
-        Kirigami.FormData.label: i18n("Known factor")
-        Layout.fillWidth: true
-        enabled: multiExternalC.checked
-        model: page.factorTitles
-        onActivated: {
-            if (currentIndex > 0) {
-                xeUrlC.text = Presets.factors[currentIndex - 1].url;
-                xeKeyC.text = Presets.factors[currentIndex - 1].path;
+        PlasmaComponents.ComboBox {
+            id: factorCCombo
+            Kirigami.FormData.label: i18n("Known factor")
+            Layout.fillWidth: true
+            enabled: multiExternalC.checked
+            model: page.factorTitles
+            onActivated: {
+                if (currentIndex > 0) {
+                    xeUrlC.text = Presets.factors[currentIndex - 1].url;
+                    xeKeyC.text = Presets.factors[currentIndex - 1].path;
+                }
             }
         }
-    }
 
-    TextField {
-        id: xeUrlC
-        Kirigami.FormData.label: i18n("URL")
-        Layout.fillWidth: true
-        enabled: multiExternalC.checked
-    }
+        TextField {
+            id: xeUrlC
+            Kirigami.FormData.label: i18n("URL")
+            Layout.fillWidth: true
+            enabled: multiExternalC.checked
+        }
 
-    TextField {
-        id: xeKeyC
-        Kirigami.FormData.label: i18n("JSON path")
-        Layout.fillWidth: true
-        enabled: multiExternalC.checked
-        placeholderText: "rates.EUR"
-    }
+        TextField {
+            id: xeKeyC
+            Kirigami.FormData.label: i18n("JSON path")
+            Layout.fillWidth: true
+            enabled: multiExternalC.checked
+            placeholderText: "rates.EUR"
+        }
 
-    SourceTester {
-        Layout.fillWidth: true
-        visible: multiExternalC.checked
-        url: xeUrlC.text
-        jsonPath: xeKeyC.text
-    }
+        SourceTester {
+            Layout.fillWidth: true
+            visible: multiExternalC.checked
+            url: xeUrlC.text
+            jsonPath: xeKeyC.text
+        }
 
-    Item {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+        Item {
+            Layout.preferredHeight: Kirigami.Units.smallSpacing * 2
+        }
     }
 }
+}
+
