@@ -47,7 +47,7 @@ RowLayout {
         onUpdated: function (newValue) {
             tester.testing = false;
             tester.lastResultOk = true;
-            tester.status = i18n("OK — found %1").arg(newValue);
+            tester.status = i18n("OK — found %1", newValue);
         }
 
         onFailed: function (reason, detail) {
@@ -61,13 +61,13 @@ RowLayout {
                 tester.status = i18n("Could not reach the server.");
                 break;
             case "http":
-                tester.status = i18n("Server replied with HTTP %1.").arg(detail);
+                tester.status = i18n("Server replied with HTTP %1.", detail);
                 break;
             case "parse":
                 tester.status = i18n("The server did not return valid JSON.");
                 break;
             case "path":
-                tester.status = i18n("No number at “%1”.").arg(detail);
+                tester.status = i18n("No number at “%1”.", detail);
                 break;
             default:
                 tester.status = i18n("The source is not fully configured.");

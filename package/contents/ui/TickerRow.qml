@@ -82,8 +82,41 @@ Item {
         return name;
     }
 
+    // Hard guarantee: whatever size the shell hands us, nothing is ever
+    // painted outside it. Without this the applet draws straight over its
+    // neighbours, because a panel does not clip between applets.
+    clip: true
+
+    /**
+     * A stand-in string with the shape of the real price, used to reserve
+     * width.
+     *
+     * The panel takes the applet's size hint once, early -- when the price is
+     * still empty and has no width. The applet then keeps that small hint for
+     * its whole life and the text spills out over whatever is next to it.
+     * Reserving a fixed width from a reference string means the right amount
+     * of space is claimed from the very first frame, and the widget also stops
+     * jittering every time the price changes length.
+     */
+    property string referenceText: ""
+
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
+
+    // Off-screen, but implicitWidth still measures it.
+    Text {
+        id: referencePrice
+        visible: false
+        font.pixelSize: root.priceFontSize
+        text: root.referenceText
+    }
+
+    Text {
+        id: referenceLabel
+        visible: false
+        font.pixelSize: root.labelFontSize
+        text: root.labelText
+    }
 
     RowLayout {
         id: layout
@@ -136,7 +169,7 @@ Item {
             id: labelText
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.minimumWidth: 0
+            Layout.minimumWidth: root.labelText !== "" ? referenceLabel.implicitWidth : 0
             Layout.alignment: Qt.AlignVCenter
             visible: root.showLabel && root.labelText !== ""
             text: root.labelText
@@ -151,7 +184,9 @@ Item {
             id: priceText
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.minimumWidth: 0
+            // Reserve room for a typical price, but still grow if a real one
+            // is longer (a sudden 6-figure move should not get clipped).
+            Layout.minimumWidth: referencePrice.implicitWidth
             visible: root.showText
             text: root.priceText
             color: Kirigami.Theme.textColor

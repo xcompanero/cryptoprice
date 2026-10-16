@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- **Fixed: applet painted over its neighbours in the panel.** The panel takes
+  the applet's size hint once, early -- when the price is still empty and has
+  no width -- and keeps it. The applet then reserved only its icon, and the
+  text drew outside it across whatever came next. The price and label now
+  reserve width from a reference string of the right shape, built from the
+  configured decimals and affixes, so the correct amount is claimed from the
+  first frame and the widget no longer jitters as prices change length. The
+  applet's own implicit size also mirrors the live representation, and the
+  representation is clipped, so it cannot paint outside its slot even if the
+  shell hands it less space than asked for.
+- **Fixed: parameterised strings were not being substituted.** Plasma's
+  `i18n()` takes the arguments directly; `i18n("...").arg()` does not feed
+  them back, and the journal was full of "0 instead of 1 arguments to message
+  ... supplied before conversion".
+
 - **Fixed: the widget painted over its neighbours in the panel.** Using
   `fontSizeMode: Text.Fit` with a large base font made the text report an
   implicitWidth of 271px while rendering 107px, so the applet claimed far

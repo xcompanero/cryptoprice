@@ -114,7 +114,7 @@ Item {
                     iconModeCombo.currentIndex = 1;
                     page.cfg_iconMode = "coin";
 
-                    loadedLabel.text = i18n("Loaded “%1”.").arg(preset.title);
+                    loadedLabel.text = i18n("Loaded “%1”.", preset.title);
                     tester.clearStatus();
                 }
             }

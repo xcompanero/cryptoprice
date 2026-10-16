@@ -20,6 +20,24 @@ PlasmoidItem {
 
     property var cfg: plasmoid.configuration
 
+    // The panel sizes this applet from its implicit size. Left alone that is
+    // 0, because the PlasmoidItem root has no visual children of its own --
+    // the content lives in the representations. Mirroring the live
+    // representation keeps the hint correct as the price changes, instead of
+    // whatever it happened to be at load time.
+    implicitWidth: {
+        const rep = Plasmoid.preferredRepresentation === Plasmoid.fullRepresentation
+            ? Plasmoid.fullRepresentationItem
+            : Plasmoid.compactRepresentationItem;
+        return rep ? rep.implicitWidth : 0;
+    }
+    implicitHeight: {
+        const rep = Plasmoid.preferredRepresentation === Plasmoid.fullRepresentation
+            ? Plasmoid.fullRepresentationItem
+            : Plasmoid.compactRepresentationItem;
+        return rep ? rep.implicitHeight : 0;
+    }
+
     // ---------------------------------------------------------------- data
 
     // The last *fully* computed rate. A conversion factor that has not
@@ -76,6 +94,24 @@ PlasmoidItem {
     }
 
     readonly property string labelText: (cfg.tooltipLabel || "").trim()
+
+    /**
+     * A string shaped like the price but with fixed digits, used by TickerRow
+     * to reserve a stable width. Built from the configured decimals and
+     * affixes so it matches whatever the user will actually see.
+     */
+    readonly property string referencePriceText: {
+        const dp = cfg.controlDecimals ? Math.max(0, cfg.decPlaces) : 2;
+        // Five integer digits covers any real crypto price.
+        let s = "8".repeat(5) + (dp > 0 ? "." + "8".repeat(dp) : "");
+        if (cfg.showPricePrefix) {
+            s = cfg.pricePrefix + s;
+        }
+        if (cfg.showPriceSuffix) {
+            s = s + cfg.priceSuffix;
+        }
+        return s;
+    }
 
     readonly property int ageSeconds: lastGoodMs > 0
         ? Math.floor((nowMs - lastGoodMs) / 1000)
@@ -140,15 +176,15 @@ PlasmoidItem {
     function describeFailure(reason, detail) {
         switch (reason) {
         case "timeout":
-            return i18n("Timed out after %1 seconds").arg(cfg.timeoutSeconds);
+            return i18n("Timed out after %1 seconds", cfg.timeoutSeconds);
         case "network":
             return i18n("Could not reach the server");
         case "http":
-            return i18n("Server replied with HTTP %1").arg(detail);
+            return i18n("Server replied with HTTP %1", detail);
         case "parse":
             return i18n("The server did not return valid JSON");
         case "path":
-            return i18n("No number found at JSON path ‘%1’").arg(detail);
+            return i18n("No number found at JSON path ‘%1’", detail);
         case "config":
             return i18n("The source is not fully configured");
         default:
@@ -185,13 +221,13 @@ PlasmoidItem {
         var lines = ["<b>" + price + "</b>"];
 
         if (cfg.multiFixed) {
-            lines.push(i18n("Holding: %1").arg(Number(cfg.multiFixedInput)));
+            lines.push(i18n("Holding: %1", Number(cfg.multiFixedInput)));
         }
         if (lastError !== "") {
             lines.push("<i>" + lastError + "</i>");
         }
         if (cfg.showAge && ageSeconds >= 0) {
-            lines.push(i18n("Updated %1 ago").arg(PriceUtils.formatAge(ageSeconds)));
+            lines.push(i18n("Updated %1 ago", PriceUtils.formatAge(ageSeconds)));
         }
 
         Plasmoid.toolTipSubText = lines.join("<br />");
@@ -304,6 +340,7 @@ PlasmoidItem {
             showText: root.cfg.showText
             showLabel: false
             priceText: root.displayText
+            referenceText: root.referencePriceText
             busy: fetcherA.busy
             stale: root.stale
             failed: !root.hasRate
@@ -319,6 +356,7 @@ PlasmoidItem {
             showText: root.cfg.showText
             showLabel: root.cfg.showLabel
             priceText: root.displayText
+            referenceText: root.referencePriceText
             labelText: root.labelText
             busy: fetcherA.busy
             stale: root.stale
