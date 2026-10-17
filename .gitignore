@@ -1,5 +1,11 @@
+# SPDX-FileCopyrightText: 2026 xcompanero
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Build output, packaged archives, and local tool state.
+
 build/
 *.plasmoid
 *.user
 *.kcfg
 kcfg_generated/
+__pycache__/
