@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Crypto Price contributors
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * A "Test connection" button for one source. Used by both the General and
  * Conversion pages so a dead preset shows up in the config dialog rather

@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Crypto Price contributors
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * The panel/desktop presentation: an optional icon, an optional label and the
  * price itself. Shared by the compact and full representations so the two can

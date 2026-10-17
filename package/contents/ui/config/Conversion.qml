@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Crypto Price contributors
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * The three-stage price pipeline, which is the part of the Plasma 5 widget
  * that made it more than a one-number ticker: fetch a base price, optionally

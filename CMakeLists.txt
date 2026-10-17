@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Crypto Price contributors
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: BSD-2-Clause
 #
 # Build/install rules for the Crypto Price plasmoid.
 #

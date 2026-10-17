@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 Crypto Price contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
 #!/usr/bin/env python3
 """
 Static sanity checks for the applet's config pages.

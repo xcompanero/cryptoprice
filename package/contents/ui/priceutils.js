@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Crypto Price contributors
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Pure helpers for the Crypto Price plasmoid. No side effects, no Qt types,
  * so this file can be reasoned about (and tested) on its own.

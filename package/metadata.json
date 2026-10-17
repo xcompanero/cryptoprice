@@ -11,7 +11,7 @@
         "EnabledByDefault": true,
         "Icon": "applications-internet",
         "Id": "org.cryptoprice.plasmoid",
-        "License": "MIT",
+        "License": "GPL-3.0-or-later",
         "Name": "Crypto Price",
         "Version": "1.0.0"
     },

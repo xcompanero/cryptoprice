@@ -1,0 +1,64 @@
+<!--
+  SPDX-FileCopyrightText: 2026 Crypto Price contributors
+  SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
+# NOTICE
+
+## This project is a derivative work
+
+Crypto Price is a Plasma 6 port of:
+
+    plasma-applet-cryptocurrency-price
+    https://github.com/spmdrd/plasma-applet-cryptocurrency-price
+    Copyright (c) Spmdrd
+
+That project is distributed under the MIT licence, which permits relicensing
+under the GNU General Public License. This port is therefore distributed under
+**GPL-3.0-or-later**, with the original MIT notice retained below as required
+by those terms.
+
+### Original MIT notice
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+### Two things worth recording about the upstream
+
+1. **The upstream repository ships no licence text.** Its `metadata.desktop`
+   declares `X-KDE-PluginInfo-License=MIT`, which is the conventional KDE
+   machine-readable assertion and is treated as the grant, but no MIT licence
+   file was ever distributed with it.
+
+2. **One upstream file was GPL-2.0-or-later, not MIT.**
+   `package/contents/ui/config/IconPicker.qml` carries a GPL-2.0-or-later header
+   (Copyright 2015 Martin Kotelnik). That file provided the themed icon chooser
+   built on `KQuickAddons.IconDialog`, which no longer exists in Qt 6. It was
+   **not** carried over into this port, so the GPL-2.0-or-later header does not
+   travel with any part of this work. The replacement icon picker is original.
+
+## Licence of the individual parts
+
+| Part | Licence |
+|---|---|
+| QML, JavaScript, `main.xml` | GPL-3.0-or-later |
+| Coin glyphs in `contents/images/coins/` | GPL-3.0-or-later |
+| `CMakeLists.txt` | BSD-2-Clause (per KDE licensing policy, which requires CMake code to use a BSD licence) |
+| `README.md`, `CHANGELOG.md` | CC-BY-SA-4.0 |
+
+Full licence texts are in `LICENSES/`, following the REUSE specification.

@@ -1,3 +1,8 @@
+<!--
+  SPDX-FileCopyrightText: 2026 Crypto Price contributors
+  SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # Crypto Price — a Plasma 6 widget
 
 A Plasma 6 / Qt 6 port of
@@ -189,14 +194,34 @@ package/
 semantics — HTTP/2, redirect policy, a request cache — a C++ backend using
 `QNetworkAccessManager` can replace it without touching `main.qml`.
 
-## Credits
+## Credits and licence
 
-Ported from [spmdrd/plasma-applet-cryptocurrency-price](https://github.com/spmdrd/plasma-applet-cryptocurrency-price)
-(MIT), by Spmdrd.
+**This project is a Plasma 6 port of
+[spmdrd/plasma-applet-cryptocurrency-price](https://github.com/spmdrd/plasma-applet-cryptocurrency-price)
+by Spmdrd**, which is MIT licensed.
 
-Coin glyphs in `contents/images/coins/` are original geometric marks, not
-project logos, to keep asset licensing simple.
+MIT permits relicensing under the GPL, so this port is distributed under
+**GPL-3.0-or-later** with the original MIT notice retained — see `NOTICE`, which
+also records two details about the upstream worth knowing:
 
-## Licence
+- it declares `X-KDE-PluginInfo-License=MIT` but ships no MIT licence text;
+- one of its files (`IconPicker.qml`) was GPL-2.0-or-later, not MIT. That file
+  built on `KQuickAddons.IconDialog`, which Qt 6 removed, and it was **not**
+  carried over — so no GPL-2.0-or-later code travels with this work.
 
-MIT. See `LICENSE`.
+Coin glyphs in `contents/images/coins/` are original geometric marks rather
+than project logos, which keeps asset licensing simple.
+
+| Part | Licence |
+|---|---|
+| QML, JavaScript, `main.xml` | GPL-3.0-or-later |
+| Coin glyphs | GPL-3.0-or-later |
+| `CMakeLists.txt` | BSD-2-Clause — KDE's licensing policy requires CMake code to use a BSD licence |
+| `README.md`, `CHANGELOG.md` | CC-BY-SA-4.0 |
+
+Full texts are in `LICENSES/`, per the REUSE specification. `LICENSE` is the
+GPL-3.0 text, so GitHub displays it.
+
+GPL affects redistribution, not use: you can run this freely, and anyone you
+give it to must pass on the source and keep their modifications under the same
+terms.
