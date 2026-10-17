@@ -46,6 +46,33 @@ plasmoidviewer --applet org.cryptoprice.plasmoid
 `plasmoidviewer` is much better than install-and-reload: no panel juggling,
 and QML warnings go to the terminal.
 
+### Changes will not appear until plasmashell restarts
+
+This is the single most misleading thing about developing a QML applet, and
+it cost a lot of time here.
+
+**plasmashell caches compiled QML units in memory, keyed by URL, for the
+lifetime of the process.** Edit a `.qml` file, run
+`kpackagetool6 --upgrade`, remove the widget and add it back — and you get a
+faithful render of the code as it was *when that file was first compiled*.
+Later edits are simply not there.
+
+Clearing `~/.cache/plasmashell/qmlcache` does **not** help; that is the
+on-disk cache, not the in-memory one. You need:
+
+```sh
+systemctl --user restart plasma-plasmashell
+```
+
+The tell is a comparison between two processes: if `plasmawindowed` (fresh)
+renders your change correctly while the panel (long-running) does not, you are
+looking at stale code, not a bug in your QML. Check that before debugging.
+
+Note that this also means applet QML `console.log`/`console.warn` is not a
+reliable diagnostic here — those lines did not reach `journalctl --user` in
+testing, so measuring the result on screen (a distinctive background, say) is
+more dependable than logging.
+
 ## What it does
 
 - Any HTTPS endpoint returning JSON, with any JSON path
