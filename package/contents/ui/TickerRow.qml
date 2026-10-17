@@ -38,9 +38,10 @@ Item {
      * full applet height, so the icon needs its own bound: without one it is
      * stretched to 22x500 and PreserveAspectFit renders a 22px dot.
      */
-    readonly property int iconSize: Math.round(
-        Math.max(Kirigami.Units.iconSizes.small,
-                 Math.min(height * 0.7, Kirigami.Units.iconSizes.huge)))
+    readonly property int iconSize: adaptToHeight
+        ? Math.round(Math.max(Kirigami.Units.iconSizes.small,
+                              Math.min(height * 0.7, Kirigami.Units.iconSizes.huge)))
+        : Math.round(effectiveFixedFontSize * 1.15)
 
     /**
      * Font sizes derived from the applet's own height.
@@ -53,10 +54,36 @@ Item {
      * applets either side of it. Scaling the font directly keeps implicitWidth
      * honest at every panel height.
      */
-    readonly property int priceFontSize: Math.max(
-        8, Math.min(Kirigami.Units.largeSpacing * 7, Math.round(height * 0.75)))
-    readonly property int labelFontSize: Math.max(
-        7, Math.min(Kirigami.Units.largeSpacing * 5, Math.round(height * 0.5)))
+    /**
+     * Scale the fonts with the applet's height -- only when that cannot feed
+     * back into the width.
+     *
+     * The size hint the panel uses is Layout.minimumWidth, which is derived
+     * from this font size, which was derived from `height`. At construction
+     * height is 0, so the font collapses to 8px, the reservation collapses to
+     * roughly 78px, and the panel keeps that for the applet's whole life --
+     * the text then does not fit and gets clipped. The compact representation
+     * therefore uses a fixed size, which has no such dependency; the full
+     * representation (desktop, where width is not at a premium) still scales.
+     */
+    property bool adaptToHeight: true
+
+    readonly property int priceFontSize: adaptToHeight
+        ? Math.max(8, Math.min(Kirigami.Units.largeSpacing * 7, Math.round(height * 0.75)))
+        : effectiveFixedFontSize
+    readonly property int labelFontSize: adaptToHeight
+        ? Math.max(7, Math.min(Kirigami.Units.largeSpacing * 5, Math.round(height * 0.5)))
+        : Math.max(7, Math.round(effectiveFixedFontSize * 0.6))
+
+    /** 0 means "sensible default for a panel"; anything else is a px override. */
+    property int fontSizeOverride: 0
+    // Kirigami.Units.gridUnit is derived from the font size, so it is the one
+    // measure that does not depend on how tall the applet happens to be.
+    // (iconSizes follows the user's icon-size preference, which on this system
+    // runs 16/32/48 -- far too coarse to derive a font from.)
+    readonly property int effectiveFixedFontSize: fontSizeOverride > 0
+        ? fontSizeOverride
+        : Math.round(Kirigami.Units.gridUnit * 1.25)
 
     readonly property real effectiveOpacity: failed ? 0.45 : (busy || stale ? 0.6 : 1.0)
 

@@ -88,6 +88,10 @@
       <label>Price suffix</label>
       <default></default>
     </entry>
+    <entry name="fontSizePx" type="Int">
+      <label>Font size in pixels (0 = automatic)</label>
+      <default>0</default>
+    </entry>
     <entry name="controlDecimals" type="Bool">
       <label>Round to a fixed number of decimals</label>
       <default>true</default>

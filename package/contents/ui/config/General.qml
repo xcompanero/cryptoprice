@@ -47,6 +47,7 @@ Item {
 
     property alias cfg_controlDecimals: controlDecimals.checked
     property alias cfg_decPlaces: decPlaces.value
+    property alias cfg_fontSizePx: fontSize.value
 
     property alias cfg_iconName: iconName.text
 

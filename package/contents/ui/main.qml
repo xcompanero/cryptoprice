@@ -350,6 +350,8 @@ PlasmoidItem {
             showIcon: root.cfg.showIcon
             showText: root.cfg.showText
             showLabel: false
+            adaptToHeight: false
+            fontSizeOverride: root.cfg.fontSizePx
             priceText: root.displayText
             referenceText: root.referencePriceText
             busy: fetcherA.busy
@@ -366,6 +368,8 @@ PlasmoidItem {
             showIcon: root.cfg.showIcon
             showText: root.cfg.showText
             showLabel: root.cfg.showLabel
+            adaptToHeight: root.cfg.fontSizePx === 0
+            fontSizeOverride: root.cfg.fontSizePx
             priceText: root.displayText
             referenceText: root.referencePriceText
             labelText: root.labelText

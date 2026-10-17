@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- **The applet's size hint no longer depends on the applet's height.** This was
+  the underlying cause of the panel misplacement. The chain was
+  `Layout.minimumWidth` -> row `implicitWidth` -> text width -> font size ->
+  `height`. The panel reads the hint before it has assigned a height, so the
+  font collapsed to its minimum, the reservation collapsed with it, and the
+  applet was left far too small and clipped. The compact representation now uses
+  a fixed font size derived from `Kirigami.Units.gridUnit` (a font-relative
+  unit), and the icon is sized from that rather than from the height. The full
+  representation still scales with height, where width is not constrained.
+  Measured: `Layout.minimumWidth` is 142 at height 0, 20, 34 and 48, with or
+  without a price, and 180 only for a genuinely longer price.
+- New *Font size in pixels* setting (0 = automatic) for panel sizes that suit
+  neither the default nor the automatic scaling.
+
 - **Fixed: applet painted over its neighbours in the panel.** The panel takes
   the applet's size hint once, early -- when the price is still empty and has
   no width -- and keeps it. The applet then reserved only its icon, and the
