@@ -19,8 +19,6 @@ JSON path:    result.XXBTZUSD.c[0]
                         $81,912.30
 ```
 
-![Crypto Price in a Plasma panel](docs/screenshot-panel.png)
-
 ![Crypto Price on the desktop](docs/screenshot.png)
 
 ## News
