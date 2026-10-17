@@ -21,8 +21,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Write permission is needed for the tagged-release step below. Everything
+# else in this workflow only reads the repository.
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   package:
