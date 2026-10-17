@@ -23,6 +23,47 @@ JSON path:    result.XXBTZUSD.c[0]
 
 ![Crypto Price on the desktop](docs/screenshot.png)
 
+## News
+
+### This is a Plasma 6 port — the original is Plasma 5 only
+
+If you came here from
+[spmdrd/plasma-applet-cryptocurrency-price](https://github.com/spmdrd/plasma-applet-cryptocurrency-price),
+that widget stopped working on Plasma 6 and has had no updates since 2020.
+This is the same widget, ported and put back on working order. The idea is
+unchanged: **give it any URL and any JSON path**, and it shows you that number.
+
+```sh
+kpackagetool6 --type Plasma/Applet --install cryptoprice.plasmoid
+```
+
+**The same features** — arbitrary source URL and JSON path, three-stage
+multiplication (base price × conversion factor × conversion factor × an amount
+you hold), decimal places, prefix and suffix, tooltip, custom icons, background
+toggle, and a preset list.
+
+**What's fixed**
+
+- **The timeout never worked.** The original set `xhr.timeout`, which QML's
+  `XMLHttpRequest` has no member for, so it was silently ignored. Requests are
+  now bounded by a real watchdog timer.
+- **A failed request left a spinner on screen forever.** The old code cleared
+  its busy flag only on HTTP 200. Every failure path is handled now, the cause
+  is named in the tooltip, and the last good price stays visible.
+- **The arithmetic ran on strings.** The price was a string property multiplied
+  inside a text binding, so every re-evaluation re-multiplied an
+  already-rounded value. It is now computed as a number.
+- **JSON paths could not walk arrays.** `a[0].b`, `a.0.b` and `a.b` are all
+  understood now; the old tokenizer turned `data[0].price` into `data0`.
+- **Half the presets were dead.** Bittrex v1.1, BTCC, the CoinMarketCap v1 API,
+  the LocalBitcoins average endpoint and Poloniex no longer answer — and
+  fixer.io, the old *default* fiat source, returns 404, so currency conversion
+  did not work out of the box. Every preset shipped here was checked by hand in
+  October 2026, and each has a **Test connection** button so a source that
+  rots is diagnosed in the config dialog instead of by watching a stale panel.
+- **It refreshes every 30 minutes** by default rather than 10, which is kinder
+  to exchange API rate limits.
+
 ## Installing
 
 Nothing needs to be compiled.
