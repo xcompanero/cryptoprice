@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2026 Crypto Price contributors
+ * SPDX-FileCopyrightText: 2026 xcompanero
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Everything about where the price comes from and how it looks.

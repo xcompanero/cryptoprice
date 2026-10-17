@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2026 Crypto Price contributors
+ * SPDX-FileCopyrightText: 2026 xcompanero
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * A "Test connection" button for one source. Used by both the General and

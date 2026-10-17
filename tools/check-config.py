@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Crypto Price contributors
+# SPDX-FileCopyrightText: 2026 xcompanero
 # SPDX-License-Identifier: GPL-3.0-or-later
 #!/usr/bin/env python3
 """

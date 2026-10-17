@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2026 Crypto Price contributors
+  SPDX-FileCopyrightText: 2026 xcompanero
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
@@ -19,11 +19,19 @@ JSON path:    result.XXBTZUSD.c[0]
                         $81,912.30
 ```
 
-![Crypto Price in a Plasma panel](docs/screenshot.png)
+![Crypto Price in a Plasma panel](docs/screenshot-panel.png)
+
+![Crypto Price on the desktop](docs/screenshot.png)
 
 ## Installing
 
-Nothing needs to be compiled. From the project directory:
+Nothing needs to be compiled.
+
+```sh
+kpackagetool6 --type Plasma/Applet --install cryptoprice.plasmoid
+```
+
+Or from a clone:
 
 ```sh
 kpackagetool6 --type Plasma/Applet --install package
@@ -45,7 +53,7 @@ needs Extra CMake Modules — the widget itself is pure QML.
 
 ```sh
 sudo apt install plasma-workspace-dev qt6-declarative-dev-tools
-plasmoidviewer --applet org.cryptoprice.plasmoid
+plasmoidviewer --applet com.github.xcompanero.cryptoprice
 ```
 
 With no dev packages installed, `python3 tools/check-config.py` still catches

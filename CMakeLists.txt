@@ -14,7 +14,7 @@
 # For day-to-day development you do not need CMake at all:
 #
 #   kpackagetool6 --type Plasma/Applet --install package
-#   plasmoidviewer --applet org.cryptoprice.plasmoid
+#   plasmoidviewer --applet com.github.xcompanero.cryptoprice
 
 cmake_minimum_required(VERSION 3.16)
 
@@ -25,4 +25,4 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 find_package(Plasma REQUIRED)
 
-plasma_install_package(package org.cryptoprice.plasmoid)
+plasma_install_package(package com.github.xcompanero.cryptoprice)

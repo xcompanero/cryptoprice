@@ -3,17 +3,18 @@
     "KPlugin": {
         "Authors": [
             {
-                "Name": "Crypto Price contributors"
+                "Name": "xcompanero"
             }
         ],
         "Category": "Utilities",
         "Description": "Shows the current price of any cryptocurrency from a user-defined source",
         "EnabledByDefault": true,
         "Icon": "applications-internet",
-        "Id": "org.cryptoprice.plasmoid",
+        "Id": "com.github.xcompanero.cryptoprice",
         "License": "GPL-3.0-or-later",
         "Name": "Crypto Price",
-        "Version": "1.0.0"
+        "Version": "1.0.0",
+        "Website": "https://github.com/xcompanero/cryptoprice"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-MainScript": "ui/main.qml"

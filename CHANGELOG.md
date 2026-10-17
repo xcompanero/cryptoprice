@@ -1,5 +1,5 @@
 <!--
-  SPDX-FileCopyrightText: 2026 Crypto Price contributors
+  SPDX-FileCopyrightText: 2026 xcompanero
   SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 

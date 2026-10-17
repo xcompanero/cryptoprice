@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2026 Crypto Price contributors
+ * SPDX-FileCopyrightText: 2026 xcompanero
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * The three-stage price pipeline, which is the part of the Plasma 5 widget
