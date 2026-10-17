@@ -43,6 +43,11 @@ sudo apt install plasma-workspace-dev qt6-declarative-dev-tools
 plasmoidviewer --applet org.cryptoprice.plasmoid
 ```
 
+With no dev packages installed, `python3 tools/check-config.py` still catches
+the config-page mistakes that are otherwise silent — a `cfg_` alias pointing at
+an id that doesn't exist makes the whole page fail to load and come up blank,
+with the only trace being one line in the journal.
+
 `plasmoidviewer` is much better than install-and-reload: no panel juggling,
 and QML warnings go to the terminal.
 

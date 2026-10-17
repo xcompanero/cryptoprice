@@ -313,6 +313,21 @@ Item {
             text: i18n("Formatting")
         }
 
+        PlasmaComponents.SpinBox {
+            id: fontSize
+            Kirigami.FormData.label: i18n("Font size in pixels")
+            from: 0
+            to: 64
+            stepSize: 1
+        }
+
+        Label {
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+            opacity: 0.7
+            text: i18n("Leave at 0 for a size that suits a normal panel. Set it if your panel is unusually short or tall -- the widget measures itself from this, so the panel reserves the right amount of room.")
+        }
+
         CheckBox {
             id: showPricePrefix
             text: i18n("Show a prefix")
