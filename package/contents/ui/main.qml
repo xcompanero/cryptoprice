@@ -24,23 +24,10 @@ PlasmoidItem {
     Layout.fillHeight: true
 
 
-    // The panel sizes this applet from its implicit size. Left alone that is
-    // 0, because the PlasmoidItem root has no visual children of its own --
-    // the content lives in the representations. Mirroring the live
-    // representation keeps the hint correct as the price changes, instead of
-    // whatever it happened to be at load time.
-    implicitWidth: {
-        const rep = Plasmoid.preferredRepresentation === Plasmoid.fullRepresentation
-            ? Plasmoid.fullRepresentationItem
-            : Plasmoid.compactRepresentationItem;
-        return rep ? rep.implicitWidth : 0;
-    }
-    implicitHeight: {
-        const rep = Plasmoid.preferredRepresentation === Plasmoid.fullRepresentation
-            ? Plasmoid.fullRepresentationItem
-            : Plasmoid.compactRepresentationItem;
-        return rep ? rep.implicitHeight : 0;
-    }
+    // No implicitWidth/implicitHeight binding here on purpose. The Plasma 5
+    // original did not set one, and the shell manages this applet's implicit
+    // size itself -- a QML binding on it fights the shell for the same
+    // property.
 
     // ---------------------------------------------------------------- data
 
