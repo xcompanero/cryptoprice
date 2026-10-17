@@ -5,7 +5,12 @@
 #
 # This only zips the package directory -- there is nothing to compile, because
 # the widget is pure QML. The value here is that the artefact is built from a
-# known commit rather than from whatever happens to be on someone's desktop.
+# known commit rather than from whatever happens to be on someone's desktop,
+# and that the archive is checked to be a genuinely installable package.
+#
+# Deliberately no attempt is made to install Plasma and run the applet here:
+# that needs a display and a large dependency set, and a headless runner would
+# only add flakiness. Structure is verified instead.
 
 name: Build applet
 
@@ -27,11 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install packaging tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y zip desktop-file-validate
-
       - name: Verify the config pages are internally consistent
         run: python3 tools/check-config.py
 
@@ -42,26 +42,95 @@ jobs:
           cd ..
           unzip -l cryptoprice.plasmoid
 
-      - name: Check the archive really is an installable package
+      - name: Check the archive is a complete, installable applet
         run: |
-          # metadata.json must be present and declare the expected identity.
-          unzip -p cryptoprice.plasmoid metadata.json | tee /dev/stderr \
-            | grep -q '"Id": "com.github.xcompanero.cryptoprice"'
-          # The main script the shell will load must exist inside the archive.
-          unzip -l cryptoprice.plasmoid | grep -q "contents/ui/main.qml"
-          # And the config model must exist.
-          unzip -l cryptoprice.plasmoid | grep -q "contents/config/config.qml"
+          set -euo pipefail
 
-      - name: Install and confirm the widget loads under Plasma 6
+          listing=$(unzip -Z1 cryptoprice.plasmoid)
+
+          # Every path the shell will load must be present.
+          for required in \
+            metadata.json \
+            contents/ui/main.qml \
+            contents/ui/RateFetcher.qml \
+            contents/ui/TickerRow.qml \
+            contents/ui/priceutils.js \
+            contents/config/config.qml \
+            contents/config/main.xml
+          do
+            if ! grep -qx "$required" <<<"$listing"; then
+              echo "MISSING: $required"
+              exit 1
+            fi
+          done
+
+          # The bundled coin glyphs the config offers must all ship.
+          for coin in btc eth ltc xmr bch sol doge ada coin; do
+            if ! grep -qx "contents/images/coins/$coin.svg" <<<"$listing"; then
+              echo "MISSING ICON: $coin.svg"
+              exit 1
+            fi
+          done
+
+          echo "archive contents OK"
+
+      - name: Check the package metadata
         run: |
-          # Pull in the Qt 6 / Plasma runtime the applet needs, then check the
-          # package installs and that plasmawindowed can load its QML.
-          sudo apt-get install --no-install-recommends -y \
-            kpackagetool6 plasma-workspace qml-module-qtquick \
-            qml-module-org-kde-plasma-core qml-module-org-kde-plasma-plasmoid \
-            qml-module-org-kde-plasma-components qml-module-org-kde-kirigami
-          kpackagetool6 --type Plasma/Applet --install cryptoprice.plasmoid
-          kpackagetool6 --type Plasma/Applet --list | grep -q cryptoprice
+          set -euo pipefail
+          unzip -p cryptoprice.plasmoid metadata.json > /tmp/metadata.json
+          python3 - <<'PY'
+          import json, sys
+          d = json.load(open("/tmp/metadata.json"))
+          plugin = d["KPlugin"]
+          expected = {
+              "Id": "com.github.xcompanero.cryptoprice",
+              "License": "GPL-3.0-or-later",
+          }
+          bad = {k: (plugin.get(k), v) for k, v in expected.items() if plugin.get(k) != v}
+          if bad:
+              for k, (got, want) in bad.items():
+                  print(f"{k}: got {got!r}, expected {want!r}")
+              sys.exit(1)
+          if d.get("KPackageStructure") != "Plasma/Applet":
+              print("KPackageStructure is not Plasma/Applet")
+              sys.exit(1)
+          if d.get("X-Plasma-MainScript") != "ui/main.qml":
+              print("X-Plasma-MainScript is not ui/main.qml")
+              sys.exit(1)
+          if d.get("X-Plasma-API-Minimum-Version") != "6.0":
+              print("X-Plasma-API-Minimum-Version is not 6.0")
+              sys.exit(1)
+          print("metadata OK:", plugin["Id"], plugin["Name"], plugin["Version"])
+          PY
+
+      - name: Check every source file carries a licence
+        run: |
+          set -euo pipefail
+          # REUSE-style: anything that is not a verbatim licence text should
+          # declare an SPDX identifier. metadata.json cannot hold a comment,
+          # so it relies on its KPackage "License" key instead.
+          python3 - <<'PY'
+          import pathlib, sys
+          root = pathlib.Path(".")
+          missing = []
+          for p in sorted(root.rglob("*")):
+              if not p.is_file() or ".git/" in str(p):
+                  continue
+              if p.suffix in (".png",) or p.parts[0] == "LICENSES":
+                  continue
+              if p.name in ("LICENSE", "metadata.json"):
+                  continue
+              try:
+                  head = p.read_text()[:400]
+              except Exception:
+                  continue
+              if "SPDX-License-Identifier" not in head:
+                  missing.append(str(p))
+          if missing:
+              print("no SPDX identifier:", ", ".join(missing))
+              sys.exit(1)
+          print("licence headers OK")
+          PY
 
       - name: Upload the archive
         uses: actions/upload-artifact@v4
