@@ -11,6 +11,7 @@
  * text binding only ever reads a finished number.
  */
 import QtQuick
+import QtQuick.Layouts
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 import "priceutils.js" as PriceUtils
@@ -19,6 +20,9 @@ PlasmoidItem {
     id: root
 
     property var cfg: plasmoid.configuration
+
+    Layout.fillHeight: true
+
 
     // The panel sizes this applet from its implicit size. Left alone that is
     // 0, because the PlasmoidItem root has no visual children of its own --
@@ -260,6 +264,13 @@ PlasmoidItem {
     // ------------------------------------------------------------- wiring
 
     Component.onCompleted: {
+        // Assigned here rather than as a binding: preferredRepresentation is
+        // QQmlComponent*, but a binding on it is evaluated before
+        // compactRepresentation has been created, so it reads undefined and
+        // logs "Unable to assign [undefined]".
+        if (Plasmoid.compactRepresentation) {
+            Plasmoid.preferredRepresentation = Plasmoid.compactRepresentation;
+        }
         Plasmoid.toolTipTextFormat = Text.RichText;
         updateTooltip();
     }

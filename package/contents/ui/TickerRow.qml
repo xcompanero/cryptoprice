@@ -87,6 +87,15 @@ Item {
     // neighbours, because a panel does not clip between applets.
     clip: true
 
+    // The shell reads the applet's size hint from these three, on the
+    // representation root -- not from the Layout hints of the items inside it.
+    // Declaring Layout.minimumWidth on the inner Text does nothing here, which
+    // is why the applet was given only its icon's width and the text drew
+    // outside the slot. Same shape as the Plasma 5 original.
+    Layout.fillWidth: false
+    Layout.minimumWidth: layout.implicitWidth
+    Layout.preferredWidth: layout.implicitWidth
+
     /**
      * A stand-in string with the shape of the real price, used to reserve
      * width.

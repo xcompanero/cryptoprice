@@ -31,6 +31,16 @@
   ~460px dialog, so everything below the fold was unreachable.
 - Panel applets sit edge to edge in Plasma 6, so the widget now carries its own
   left/right margin.
+- **The size hint is declared where the shell actually reads it.** The Plasma 5
+  original put `Layout.fillWidth: false` and a computed `Layout.minimumWidth` on
+  the compact representation root; the shell reads exactly those. This port had
+  `Layout.minimumWidth` on the inner Text, where it is invisible, so the applet
+  was sized from nothing useful. Fixed by matching the original's structure.
+- `preferredRepresentation` is now set to the compact component, as in the
+  Plasma 5 original. It is typed `QQmlComponent*` in Plasma 6, and this build
+  exposes no `Plasmoid.CompactRepresentation` constants. It has to be assigned
+  in `Component.onCompleted` rather than as a binding: a binding is evaluated
+  before `compactRepresentation` exists and reads undefined.
 
 ## 1.0.0
 
