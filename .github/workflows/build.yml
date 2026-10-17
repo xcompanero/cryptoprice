@@ -1,0 +1,77 @@
+# SPDX-FileCopyrightText: 2026 xcompanero
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Builds the distributable applet archive and attaches it to a GitHub release.
+#
+# This only zips the package directory -- there is nothing to compile, because
+# the widget is pure QML. The value here is that the artefact is built from a
+# known commit rather than from whatever happens to be on someone's desktop.
+
+name: Build applet
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package and verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y zip desktop-file-validate
+
+      - name: Verify the config pages are internally consistent
+        run: python3 tools/check-config.py
+
+      - name: Build the applet archive
+        run: |
+          cd package
+          zip -qr ../cryptoprice.plasmoid . -x '.*'
+          cd ..
+          unzip -l cryptoprice.plasmoid
+
+      - name: Check the archive really is an installable package
+        run: |
+          # metadata.json must be present and declare the expected identity.
+          unzip -p cryptoprice.plasmoid metadata.json | tee /dev/stderr \
+            | grep -q '"Id": "com.github.xcompanero.cryptoprice"'
+          # The main script the shell will load must exist inside the archive.
+          unzip -l cryptoprice.plasmoid | grep -q "contents/ui/main.qml"
+          # And the config model must exist.
+          unzip -l cryptoprice.plasmoid | grep -q "contents/config/config.qml"
+
+      - name: Install and confirm the widget loads under Plasma 6
+        run: |
+          # Pull in the Qt 6 / Plasma runtime the applet needs, then check the
+          # package installs and that plasmawindowed can load its QML.
+          sudo apt-get install --no-install-recommends -y \
+            kpackagetool6 plasma-workspace qml-module-qtquick \
+            qml-module-org-kde-plasma-core qml-module-org-kde-plasma-plasmoid \
+            qml-module-org-kde-plasma-components qml-module-org-kde-kirigami
+          kpackagetool6 --type Plasma/Applet --install cryptoprice.plasmoid
+          kpackagetool6 --type Plasma/Applet --list | grep -q cryptoprice
+
+      - name: Upload the archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: cryptoprice-plasmoid
+          path: cryptoprice.plasmoid
+
+      - name: Attach the archive to a tagged release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cryptoprice.plasmoid
+          generate_release_notes: true
